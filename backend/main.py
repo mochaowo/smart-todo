@@ -7,6 +7,8 @@ import schemas
 from database import SessionLocal, init_db
 from typing import List
 from datetime import datetime
+import pytz
+import os
 
 # 配置日誌
 logging.basicConfig(level=logging.INFO)
@@ -14,17 +16,35 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
-# CORS 設置 - 允許所有來源
+# CORS 設置
+origins = [
+    "http://localhost:3000",
+    "http://localhost:5173",
+    "https://smart-todo-mochaowo.vercel.app",
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=False,  # 設置為 False 以允許 allow_origins=["*"]
+    allow_origins=origins,
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 # 初始化數據庫
 init_db()
+
+@app.get("/")
+def read_root():
+    return {"status": "ok", "message": "Smart Todo API is running"}
+
+@app.get("/health")
+def health_check():
+    return {
+        "status": "healthy",
+        "timestamp": datetime.now(pytz.UTC).isoformat(),
+        "version": "1.0.0"
+    }
 
 # 依賴注入
 def get_db():
