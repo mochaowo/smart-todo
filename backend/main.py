@@ -18,11 +18,19 @@ logger = logging.getLogger(__name__)
 app = FastAPI()
 
 # CORS 設置
-origins = [
+default_origins = [
     "http://localhost:3000",
     "http://localhost:5173",
-    "https://smart-todo-mochaowo.vercel.app"
+    "https://smart-todo-mochaowo.vercel.app",
+    "https://smart-todo-oh5u-8poqcqk6u-mochaowos-projects.vercel.app"
 ]
+
+# 從環境變量獲取額外的 origins
+additional_origins = os.getenv("ALLOWED_ORIGINS", "").split(",")
+origins = default_origins + [origin.strip() for origin in additional_origins if origin.strip()]
+
+# 記錄允許的 origins
+logger.info(f"Allowed origins: {origins}")
 
 app.add_middleware(
     CORSMiddleware,
@@ -36,15 +44,23 @@ app.add_middleware(
 
 @app.options("/{full_path:path}")
 async def options_route(request: Request):
-    return JSONResponse(
-        content="OK",
-        headers={
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS, PATCH",
-            "Access-Control-Allow-Headers": "*",
-            "Access-Control-Max-Age": "3600",
-        },
-    )
+    origin = request.headers.get("origin")
+    logger.info(f"Received OPTIONS request from origin: {origin}")
+    
+    if origin in origins:
+        logger.info(f"Origin {origin} is allowed")
+        return JSONResponse(
+            content="OK",
+            headers={
+                "Access-Control-Allow-Origin": origin,
+                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS, PATCH",
+                "Access-Control-Allow-Headers": "*",
+                "Access-Control-Allow-Credentials": "true",
+                "Access-Control-Max-Age": "3600",
+            },
+        )
+    logger.warning(f"Origin {origin} is not allowed")
+    return JSONResponse(status_code=400, content={"message": "Invalid origin"})
 
 # 初始化數據庫
 init_db()
