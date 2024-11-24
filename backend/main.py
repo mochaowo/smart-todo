@@ -2,6 +2,7 @@ from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 import logging
+import os
 import models
 import schemas
 from database import SessionLocal, init_db
@@ -14,10 +15,16 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
-# 配置 CORS
+# CORS 設置
+origins = [
+    "http://localhost:5173",  # Vite 開發伺服器
+    "http://localhost:4173",  # Vite 預覽伺服器
+    "https://smart-todo-mochaowo.vercel.app",  # Vercel 部署網址
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
