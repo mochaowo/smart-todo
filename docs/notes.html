@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Todo 開發筆記</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
+    <style>
+        .editor-toolbar {
+            border-radius: 0.5rem 0.5rem 0 0;
+            border-top: 1px solid #e5e7eb;
+            border-left: 1px solid #e5e7eb;
+            border-right: 1px solid #e5e7eb;
+        }
+        .CodeMirror {
+            border-radius: 0 0 0.5rem 0.5rem;
+        }
+        .editor-preview {
+            background: white;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen p-8">
+    <div class="max-w-7xl mx-auto">
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-900">Smart Todo 開發筆記</h1>
+            <a href="index.html" class="text-blue-600 hover:text-blue-800 font-medium">
+                返回架構圖
+            </a>
+        </div>
+
+        <!-- 筆記編輯器 -->
+        <div class="bg-white rounded-lg shadow-sm">
+            <textarea id="editor"></textarea>
+        </div>
+
+        <!-- 自動保存提示 -->
+        <div id="saveStatus" class="mt-4 text-sm text-gray-600"></div>
+    </div>
+
+    <script>
+        // 初始化編輯器
+        const editor = new EasyMDE({
+            element: document.getElementById('editor'),
+            autosave: {
+                enabled: true,
+                uniqueId: 'smart-todo-notes',
+                delay: 1000,
+            },
+            spellChecker: false,
+            placeholder: '在這裡寫下你的開發筆記...',
+            toolbar: [
+                'bold', 'italic', 'heading', '|',
+                'quote', 'unordered-list', 'ordered-list', '|',
+                'link', 'image', '|',
+                'preview', 'side-by-side', 'fullscreen', '|',
+                'guide'
+            ],
+            initialValue: localStorage.getItem('smart-todo-notes') || `# Smart Todo 開發筆記
+
+## 待辦事項
+- [ ] 完善用戶認證
+- [ ] 實現任務篩選
+- [ ] 添加數據分析
+
+## 已知問題
+- 任務拖放偶爾不穩定
+- 右鍵選單位置需要優化
+
+## 開發日誌
+
+### 2024-01-XX
+- 實現了任務狀態切換
+- 添加了優先級設置
+- 優化了 UI 設計
+
+### 技術筆記
+#### 狀態管理
+\`\`\`typescript
+// 狀態更新邏輯
+const handleUpdateTask = (taskId: string, updates: Partial<Task>) => {
+    setTasks(tasks.map(task => 
+        task.id === taskId 
+            ? { ...task, ...updates }
+            : task
+    ));
+};
+\`\`\`
+
+#### 性能優化
+- 使用 React.memo 優化渲染
+- 實現虛擬列表
+- 優化圖片加載
+
+#### 安全考慮
+- 輸入驗證
+- XSS 防護
+- CSRF 防護
+
+## API 文檔
+### 任務相關
+- GET /api/tasks
+- POST /api/tasks
+- PUT /api/tasks/:id
+- DELETE /api/tasks/:id
+
+### 用戶相關
+- POST /api/auth/login
+- POST /api/auth/register
+- GET /api/user/profile
+
+## 部署說明
+1. 環境配置
+2. 數據庫設置
+3. 緩存配置
+4. 消息隊列
+`,
+        });
+
+        // 監聽自動保存事件
+        editor.codemirror.on('autosave', (editor) => {
+            const saveStatus = document.getElementById('saveStatus');
+            saveStatus.textContent = '已自動保存 - ' + new Date().toLocaleTimeString();
+            localStorage.setItem('smart-todo-notes', editor.getValue());
+        });
+    </script>
+</body>
+</html>

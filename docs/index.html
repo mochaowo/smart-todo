@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Todo 系統文檔</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        .mermaid {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+            margin: 1rem 0;
+        }
+        .doc-section {
+            scroll-margin-top: 5rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- 導航欄 -->
+    <nav class="bg-white shadow-sm fixed w-full z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <h1 class="text-xl font-bold text-gray-900">Smart Todo 系統文檔</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="#recommended" class="text-gray-600 hover:text-gray-900">推薦功能</a>
+                    <a href="#architecture" class="text-gray-600 hover:text-gray-900">系統架構</a>
+                    <a href="#frontend" class="text-gray-600 hover:text-gray-900">前端設計</a>
+                    <a href="#backend" class="text-gray-600 hover:text-gray-900">後端設計</a>
+                    <a href="#database" class="text-gray-600 hover:text-gray-900">數據設計</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要內容 -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-12">
+        <!-- 系統概述 -->
+        <section class="mb-12 bg-white rounded-xl p-6 shadow-sm">
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">系統概述</h2>
+            <div class="prose max-w-none">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-blue-50 p-4 rounded-lg">
+                        <h3 class="font-semibold text-blue-900 mb-2">核心功能</h3>
+                        <ul class="list-disc list-inside text-blue-800 space-y-1">
+                            <li>任務管理與追蹤</li>
+                            <li>看板與列表視圖</li>
+                            <li>優先級管理</li>
+                            <li>任務狀態追蹤</li>
+                            <li>即時數據統計</li>
+                        </ul>
+                    </div>
+                    <div class="bg-green-50 p-4 rounded-lg">
+                        <h3 class="font-semibold text-green-900 mb-2">技術特點</h3>
+                        <ul class="list-disc list-inside text-green-800 space-y-1">
+                            <li>React + TypeScript</li>
+                            <li>Tailwind CSS</li>
+                            <li>FastAPI 後端</li>
+                            <li>PostgreSQL 數據庫</li>
+                            <li>Redis 緩存</li>
+                        </ul>
+                    </div>
+                    <div class="bg-purple-50 p-4 rounded-lg">
+                        <h3 class="font-semibold text-purple-900 mb-2">系統優勢</h3>
+                        <ul class="list-disc list-inside text-purple-800 space-y-1">
+                            <li>高性能與可擴展性</li>
+                            <li>直覺的用戶界面</li>
+                            <li>實時數據更新</li>
+                            <li>安全的數據存儲</li>
+                            <li>完整的錯誤處理</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 推薦功能 -->
+        <section id="recommended" class="mb-12 bg-white rounded-xl p-6 shadow-sm doc-section">
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">推薦功能</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- 1. 任務分析與統計 -->
+                <div class="bg-blue-50 p-4 rounded-lg">
+                    <h3 class="font-semibold text-blue-900 mb-2">任務分析與統計</h3>
+                    <ul class="list-disc list-inside text-blue-800 space-y-1">
+                        <li>任務完成率統計</li>
+                        <li>趨勢分析圖表</li>
+                        <li>任務延遲率追蹤</li>
+                        <li>生產力指標儀表板</li>
+                        <li>標籤使用分析</li>
+                    </ul>
+                </div>
+
+                <!-- 2. 智能排程 -->
+                <div class="bg-green-50 p-4 rounded-lg">
+                    <h3 class="font-semibold text-green-900 mb-2">智能排程功能</h3>
+                    <ul class="list-disc list-inside text-green-800 space-y-1">
+                        <li>自動任務排程</li>
+                        <li>工作負載平衡</li>
+                        <li>智能提醒系統</li>
+                        <li>重複任務生成</li>
+                        <li>時間衝突檢測</li>
+                    </ul>
+                </div>
+
+                <!-- 3. 協作功能 -->
+                <div class="bg-purple-50 p-4 rounded-lg">
+                    <h3 class="font-semibold text-purple-900 mb-2">協作與分享</h3>
+                    <ul class="list-disc list-inside text-purple-800 space-y-1">
+                        <li>團隊任務共享</li>
+                        <li>任務委派功能</li>
+                        <li>即時協作評論</li>
+                        <li>進度追蹤通知</li>
+                        <li>團隊儀表板</li>
+                    </ul>
+                </div>
+
+                <!-- 4. UI/UX -->
+                <div class="bg-yellow-50 p-4 rounded-lg">
+                    <h3 class="font-semibold text-yellow-900 mb-2">UI/UX 優化</h3>
+                    <ul class="list-disc list-inside text-yellow-800 space-y-1">
+                        <li>深色模式支援</li>
+                        <li>自定義主題</li>
+                        <li>拖放介面優化</li>
+                        <li>快速鍵支援</li>
+                        <li>響應式設計</li>
+                    </ul>
+                </div>
+
+                <!-- 5. 整合功能 -->
+                <div class="bg-red-50 p-4 rounded-lg">
+                    <h3 class="font-semibold text-red-900 mb-2">第三方整合</h3>
+                    <ul class="list-disc list-inside text-red-800 space-y-1">
+                        <li>日曆同步功能</li>
+                        <li>雲端儲存整合</li>
+                        <li>專案管理工具</li>
+                        <li>通訊軟體整合</li>
+                        <li>郵件通知系統</li>
+                    </ul>
+                </div>
+
+                <!-- 6. AI 功能 -->
+                <div class="bg-indigo-50 p-4 rounded-lg">
+                    <h3 class="font-semibold text-indigo-900 mb-2">AI 輔助功能</h3>
+                    <ul class="list-disc list-inside text-indigo-800 space-y-1">
+                        <li>智能任務分類</li>
+                        <li>優先級建議</li>
+                        <li>工作時間預估</li>
+                        <li>個人化建議</li>
+                        <li>自然語言輸入</li>
+                    </ul>
+                </div>
+
+                <!-- 7. 資料管理 -->
+                <div class="bg-pink-50 p-4 rounded-lg">
+                    <h3 class="font-semibold text-pink-900 mb-2">進階資料管理</h3>
+                    <ul class="list-disc list-inside text-pink-800 space-y-1">
+                        <li>資料匯出功能</li>
+                        <li>備份與還原</li>
+                        <li>版本控制系統</li>
+                        <li>批量編輯工具</li>
+                        <li>資料遷移助手</li>
+                    </ul>
+                </div>
+
+                <!-- 8. 生產力工具 -->
+                <div class="bg-cyan-50 p-4 rounded-lg">
+                    <h3 class="font-semibold text-cyan-900 mb-2">生產力增強</h3>
+                    <ul class="list-disc list-inside text-cyan-800 space-y-1">
+                        <li>番茄鐘整合</li>
+                        <li>時間追蹤系統</li>
+                        <li>專注模式</li>
+                        <li>目標設定追蹤</li>
+                        <li>成就系統</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 系統架構 -->
+        <section id="architecture" class="mb-12 bg-white rounded-xl p-6 shadow-sm doc-section">
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">系統架構</h2>
+            <pre class="mermaid">
+flowchart TB
+    subgraph Frontend["前端層"]
+        React["React 應用"]
+        TypeScript["TypeScript"]
+        TailwindCSS["Tailwind CSS"]
+    end
+
+    subgraph Backend["後端層"]
+        FastAPI["FastAPI 服務"]
+        Redis["Redis 緩存"]
+        PostgreSQL["PostgreSQL 數據庫"]
+    end
+
+    subgraph Services["服務層"]
+        TaskService["任務服務"]
+        AuthService["認證服務"]
+        StatsService["統計服務"]
+    end
+
+    React --> FastAPI
+    FastAPI --> Services
+    Services --> Redis
+    Services --> PostgreSQL
+            </pre>
+        </section>
+
+        <!-- 前端設計 -->
+        <section id="frontend" class="mb-12 bg-white rounded-xl p-6 shadow-sm doc-section">
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">前端設計</h2>
+            <pre class="mermaid">
+flowchart TB
+    App --> TaskList
+    App --> KanbanBoard
+    App --> Sidebar
+    
+    TaskList --> TaskCard
+    KanbanBoard --> TaskColumn
+    TaskColumn --> TaskCard
+    TaskCard --> TaskMenu
+    
+    subgraph Components["核心元件"]
+        TaskList["任務列表"]
+        KanbanBoard["看板視圖"]
+        Sidebar["側邊欄"]
+        TaskCard["任務卡片"]
+        TaskColumn["任務列"]
+        TaskMenu["任務選單"]
+    end
+            </pre>
+            <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3">元件職責</h3>
+                    <ul class="space-y-2 text-gray-600">
+                        <li><span class="font-medium">App：</span> 應用程式主元件，管理全局狀態</li>
+                        <li><span class="font-medium">TaskList：</span> 列表形式顯示任務</li>
+                        <li><span class="font-medium">KanbanBoard：</span> 看板形式管理任務</li>
+                        <li><span class="font-medium">TaskCard：</span> 顯示單個任務的詳細信息</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3">狀態管理</h3>
+                    <ul class="space-y-2 text-gray-600">
+                        <li><span class="font-medium">本地存儲：</span> 使用 localStorage 保存任務</li>
+                        <li><span class="font-medium">即時更新：</span> 實時反映任務狀態變化</li>
+                        <li><span class="font-medium">緩存策略：</span> 優化數據加載和更新</li>
+                        <li><span class="font-medium">錯誤處理：</span> 完整的錯誤提示和恢復</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 後端設計 -->
+        <section id="backend" class="mb-12 bg-white rounded-xl p-6 shadow-sm doc-section">
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">後端設計</h2>
+            <pre class="mermaid">
+flowchart TB
+    subgraph API["API 層"]
+        Router["路由層"]
+        Controller["控制器"]
+        Service["服務層"]
+    end
+
+    subgraph Cache["緩存層"]
+        Redis["Redis"]
+    end
+
+    subgraph DB["數據層"]
+        PostgreSQL["PostgreSQL"]
+    end
+
+    Router --> Controller
+    Controller --> Service
+    Service --> Cache
+    Service --> DB
+            </pre>
+            <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3">API 端點</h3>
+                    <div class="space-y-2">
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <code class="text-sm">GET /api/tasks</code>
+                            <p class="text-gray-600 text-sm mt-1">獲取任務列表</p>
+                        </div>
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <code class="text-sm">POST /api/tasks</code>
+                            <p class="text-gray-600 text-sm mt-1">創建新任務</p>
+                        </div>
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <code class="text-sm">PUT /api/tasks/{id}</code>
+                            <p class="text-gray-600 text-sm mt-1">更新任務</p>
+                        </div>
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <code class="text-sm">DELETE /api/tasks/{id}</code>
+                            <p class="text-gray-600 text-sm mt-1">刪除任務</p>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3">緩存策略</h3>
+                    <ul class="space-y-2 text-gray-600">
+                        <li><span class="font-medium">任務列表：</span> 5分鐘緩存</li>
+                        <li><span class="font-medium">單個任務：</span> 2分鐘緩存</li>
+                        <li><span class="font-medium">統計數據：</span> 10分鐘緩存</li>
+                        <li><span class="font-medium">用戶設置：</span> 30分鐘緩存</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 數據設計 -->
+        <section id="database" class="mb-12 bg-white rounded-xl p-6 shadow-sm doc-section">
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">數據設計</h2>
+            <pre class="mermaid">
+erDiagram
+    TASKS ||--o{ TASK_HISTORY : has
+    TASKS {
+        uuid id PK
+        string title
+        string description
+        enum status
+        enum priority
+        datetime due_date
+        datetime created_at
+        datetime updated_at
+    }
+
+    TASK_HISTORY {
+        uuid id PK
+        uuid task_id FK
+        enum action
+        jsonb changes
+        datetime created_at
+    }
+            </pre>
+            <div class="mt-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-3">數據結構</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h4 class="font-medium text-gray-900 mb-2">任務（Tasks）</h4>
+                        <ul class="space-y-1 text-gray-600">
+                            <li><code class="text-sm">id</code>: UUID 主鍵</li>
+                            <li><code class="text-sm">title</code>: 任務標題</li>
+                            <li><code class="text-sm">description</code>: 任務描述</li>
+                            <li><code class="text-sm">status</code>: 任務狀態</li>
+                            <li><code class="text-sm">priority</code>: 優先級</li>
+                            <li><code class="text-sm">due_date</code>: 截止日期</li>
+                        </ul>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h4 class="font-medium text-gray-900 mb-2">任務歷史（TaskHistory）</h4>
+                        <ul class="space-y-1 text-gray-600">
+                            <li><code class="text-sm">id</code>: UUID 主鍵</li>
+                            <li><code class="text-sm">task_id</code>: 關聯任務 ID</li>
+                            <li><code class="text-sm">action</code>: 操作類型</li>
+                            <li><code class="text-sm">changes</code>: 變更內容</li>
+                            <li><code class="text-sm">created_at</code>: 創建時間</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            flowchart: {
+                useMaxWidth: false,
+                htmlLabels: true,
+                curve: 'basis'
+            }
+        });
+    </script>
+</body>
+</html>
