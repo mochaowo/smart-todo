@@ -33,8 +33,8 @@ logger.info(f"Configured origins: {origins}")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
+    allow_origins=["*"],  # 允許所有來源
+    allow_credentials=False,  # 不使用憑證
     allow_methods=["*"],
     allow_headers=["*"],
 )

@@ -11,33 +11,27 @@ const getApiUrl = () => {
   
   if (!envUrl && mode === 'production') {
     console.error('Production API URL is not set!');
-    return 'https://smart-todo-2.onrender.com'; // 生產環境的默認值
+    return 'https://smart-todo-2.onrender.com';
   }
   
-  return envUrl || 'http://localhost:8000'; // 開發環境的默認值
+  return envUrl || 'http://localhost:8000';
 };
 
 const API_BASE_URL = getApiUrl();
 console.log('Final API URL:', API_BASE_URL);
 
+// 創建 axios 實例
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
-    'Accept': 'application/json'
-  },
-  withCredentials: true,
-  timeout: 10000,
-  validateStatus: (status) => {
-    return status >= 200 && status < 500;
   }
 });
 
-// 添加請求攔截器
+// 請求攔截器
 api.interceptors.request.use(
   (config) => {
     console.log(`[${import.meta.env.MODE}] Making ${config.method?.toUpperCase()} request to: ${config.baseURL}${config.url}`);
-    console.log('Request headers:', config.headers);
     return config;
   },
   (error: AxiosError) => {
@@ -46,35 +40,13 @@ api.interceptors.request.use(
   }
 );
 
-// 添加響應攔截器
+// 響應攔截器
 api.interceptors.response.use(
   (response) => {
-    console.log(`[${import.meta.env.MODE}] Response from ${response.config.url}:`, {
-      status: response.status,
-      headers: response.headers,
-      data: response.data
-    });
-    if (response.data) {
-      if (Array.isArray(response.data)) {
-        response.data = response.data.map(formatTaskDates);
-      } else if (response.data.id) {
-        response.data = formatTaskDates(response.data);
-      }
-    }
     return response;
   },
   (error: AxiosError) => {
-    if (error.response) {
-      console.error('Response error:', {
-        status: error.response.status,
-        headers: error.response.headers,
-        data: error.response.data
-      });
-    } else if (error.request) {
-      console.error('Request error:', error.message);
-    } else {
-      console.error('Error:', error.message);
-    }
+    console.error('Response error:', error.message);
     return Promise.reject(error);
   }
 );
@@ -119,6 +91,13 @@ export const getTasks = async (): Promise<Task[]> => {
   try {
     console.log('Fetching tasks...');
     const response = await api.get<Task[]>('/tasks');
+    if (response.data) {
+      if (Array.isArray(response.data)) {
+        response.data = response.data.map(formatTaskDates);
+      } else if (response.data.id) {
+        response.data = formatTaskDates(response.data);
+      }
+    }
     return response.data;
   } catch (error) {
     console.error('Error fetching tasks:', error);
@@ -131,7 +110,7 @@ export const createTask = async (task: TaskCreate): Promise<Task> => {
     console.log('Creating task:', task);
     const formattedTask = formatTaskForApi(task);
     const response = await api.post<Task>('/tasks', formattedTask);
-    return response.data;
+    return formatTaskDates(response.data);
   } catch (error) {
     console.error('Error creating task:', error);
     throw error;
@@ -143,7 +122,7 @@ export const updateTask = async (id: number, task: TaskUpdate): Promise<Task> =>
     console.log('Updating task:', id, task);
     const formattedTask = formatTaskForApi(task);
     const response = await api.put<Task>(`/tasks/${id}`, formattedTask);
-    return response.data;
+    return formatTaskDates(response.data);
   } catch (error) {
     console.error('Error updating task:', error);
     throw error;
