@@ -2,7 +2,6 @@ from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 import logging
-import os
 import models
 import schemas
 from database import SessionLocal, init_db
@@ -15,16 +14,10 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
-# CORS 設置
-origins = [
-    "http://localhost:5173",  # Vite 開發伺服器
-    "http://localhost:4173",  # Vite 預覽伺服器
-    "https://smart-todo-mochaowo.vercel.app",  # Vercel 部署網址
-]
-
+# 配置 CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -168,5 +161,7 @@ def reorder_tasks(task_id: int, new_position: int, db: Session = Depends(get_db)
         db.rollback()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e)
+        )
             detail=str(e)
         )
