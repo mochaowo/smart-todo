@@ -14,10 +14,17 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
-# 配置 CORS
+# CORS 設置
+origins = [
+    "http://localhost:5173",    # Vite 開發伺服器
+    "http://localhost:4173",    # Vite 預覽伺服器
+    "https://smart-todo-mochaowo.vercel.app",  # Vercel 部署網址
+    "https://smart-todo-1.onrender.com"        # Render 部署網址
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -161,7 +168,5 @@ def reorder_tasks(task_id: int, new_position: int, db: Session = Depends(get_db)
         db.rollback()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=str(e)
-        )
             detail=str(e)
         )

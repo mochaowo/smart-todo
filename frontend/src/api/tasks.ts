@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Task, TaskCreate, TaskUpdate, TaskStatus } from '../types/Task';
 
-const API_BASE_URL = 'http://localhost:8000';
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://smart-todo-1.onrender.com';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
