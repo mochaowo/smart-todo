@@ -20,18 +20,19 @@ app = FastAPI()
 # CORS 設置
 default_origins = [
     "http://localhost:3000",
-    "http://localhost:5173",
-    "https://smart-todo-mochaowo.vercel.app",
-    "https://smart-todo-oh5u-8poqcqk6u-mochaowos-projects.vercel.app",
-    "https://smart-todo-13aw-6ct87quow-mochaowos-projects.vercel.app"
+    "http://localhost:5173"
 ]
 
 # 從環境變量獲取額外的 origins
+# 可以用逗號分隔多個域名，例如：
+# ALLOWED_ORIGINS=https://app1.vercel.app,https://app2.vercel.app
 additional_origins = os.getenv("ALLOWED_ORIGINS", "").split(",")
 origins = default_origins + [origin.strip() for origin in additional_origins if origin.strip()]
 
 # 記錄允許的 origins
-logger.info(f"Allowed origins: {origins}")
+logger.info(f"Default origins: {default_origins}")
+logger.info(f"Additional origins from env: {[o for o in additional_origins if o.strip()]}")
+logger.info(f"Final allowed origins: {origins}")
 
 app.add_middleware(
     CORSMiddleware,
@@ -60,7 +61,7 @@ async def options_route(request: Request):
                 "Access-Control-Max-Age": "3600",
             },
         )
-    logger.warning(f"Origin {origin} is not allowed")
+    logger.warning(f"Origin {origin} is not allowed. Allowed origins: {origins}")
     return JSONResponse(status_code=400, content={"message": "Invalid origin"})
 
 # 初始化數據庫
