@@ -1,7 +1,9 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { Task, TaskCreate, TaskUpdate, TaskStatus } from '../types/Task';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
+console.log('API Base URL:', API_BASE_URL);
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -15,11 +17,12 @@ const api = axios.create({
 // 添加請求攔截器
 api.interceptors.request.use(
   (config) => {
-    console.log('Making request to:', config.url);
+    console.log(`Making ${config.method?.toUpperCase()} request to: ${config.baseURL}${config.url}`);
+    console.log('Request headers:', config.headers);
     return config;
   },
-  (error) => {
-    console.error('Request error:', error);
+  (error: AxiosError) => {
+    console.error('Request error:', error.message);
     return Promise.reject(error);
   }
 );
@@ -27,7 +30,11 @@ api.interceptors.request.use(
 // 添加響應攔截器
 api.interceptors.response.use(
   (response) => {
-    console.log('Response:', response);
+    console.log(`Response from ${response.config.url}:`, {
+      status: response.status,
+      headers: response.headers,
+      data: response.data
+    });
     if (response.data) {
       if (Array.isArray(response.data)) {
         response.data = response.data.map(formatTaskDates);
@@ -37,10 +44,17 @@ api.interceptors.response.use(
     }
     return response;
   },
-  (error) => {
-    console.error('Response error:', error);
+  (error: AxiosError) => {
     if (error.response) {
-      console.error('Error details:', error.response.data);
+      console.error('Response error:', {
+        status: error.response.status,
+        headers: error.response.headers,
+        data: error.response.data
+      });
+    } else if (error.request) {
+      console.error('Request error:', error.message);
+    } else {
+      console.error('Error:', error.message);
     }
     return Promise.reject(error);
   }
