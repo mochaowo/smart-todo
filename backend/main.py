@@ -22,7 +22,8 @@ default_origins = [
     "http://localhost:3000",
     "http://localhost:5173",
     "https://smart-todo-mochaowo.vercel.app",
-    "https://smart-todo-oh5u-8poqcqk6u-mochaowos-projects.vercel.app"
+    "https://smart-todo-oh5u-8poqcqk6u-mochaowos-projects.vercel.app",
+    "https://smart-todo-13aw-6ct87quow-mochaowos-projects.vercel.app"
 ]
 
 # 從環境變量獲取額外的 origins
