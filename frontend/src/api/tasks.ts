@@ -7,7 +7,9 @@ const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
-  }
+    'Accept': 'application/json'
+  },
+  withCredentials: false  // 關閉 credentials
 });
 
 // 添加請求攔截器
