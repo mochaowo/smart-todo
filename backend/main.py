@@ -18,6 +18,7 @@ app = FastAPI()
 origins = [
     "http://localhost:5173",    # Vite 開發伺服器
     "http://localhost:4173",    # Vite 預覽伺服器
+    "http://localhost:3000",    # React 開發伺服器
     "https://smart-todo-mochaowo.vercel.app",  # Vercel 部署網址
     "https://smart-todo-1.onrender.com"        # Render 部署網址
 ]
