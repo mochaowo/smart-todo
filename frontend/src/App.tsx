@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { Task, TaskStatus, TaskCreate } from './types/Task';
 import TaskList from './components/TaskList';
 import TaskForm from './components/TaskForm';
@@ -13,7 +13,7 @@ import { DocumentTextIcon } from '@heroicons/react/24/outline';
 
 function App() {
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [filter, setFilter] = useState<'all' | 'pending' | 'completed'>('all');
+  const [filterStatus] = useState<'all' | 'pending' | 'completed'>('all');
   const [currentView, setCurrentView] = useState('tasks');
 
   useEffect(() => {
@@ -125,10 +125,10 @@ function App() {
   };
 
   const filteredTasks = useMemo(() => tasks.filter(task => {
-    if (filter === 'pending' && task.status === TaskStatus.DONE) return false;
-    if (filter === 'completed' && task.status !== TaskStatus.DONE) return false;
+    if (filterStatus === 'pending' && task.status === TaskStatus.DONE) return false;
+    if (filterStatus === 'completed' && task.status !== TaskStatus.DONE) return false;
     return true;
-  }), [tasks, filter]);
+  }), [tasks, filterStatus]);
 
   const renderMainContent = () => {
     switch (currentView) {
