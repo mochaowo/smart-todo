@@ -14,14 +14,13 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
-# CORS 設置 - 開發環境允許所有來源
+# CORS 設置 - 允許所有來源
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # 允許所有來源
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,  # 設置為 False 以允許 allow_origins=["*"]
     allow_methods=["*"],
     allow_headers=["*"],
-    expose_headers=["*"]
 )
 
 # 初始化數據庫

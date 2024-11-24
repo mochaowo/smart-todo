@@ -9,13 +9,13 @@ const api = axios.create({
     'Content-Type': 'application/json',
     'Accept': 'application/json'
   },
-  withCredentials: false  // 關閉 credentials
+  withCredentials: false
 });
 
 // 添加請求攔截器
 api.interceptors.request.use(
   (config) => {
-    console.log('Making request:', config.method, config.url);
+    console.log('Making request to:', config.url);
     return config;
   },
   (error) => {
@@ -27,7 +27,7 @@ api.interceptors.request.use(
 // 添加響應攔截器
 api.interceptors.response.use(
   (response) => {
-    console.log('Response received:', response.status);
+    console.log('Response:', response);
     if (response.data) {
       if (Array.isArray(response.data)) {
         response.data = response.data.map(formatTaskDates);
