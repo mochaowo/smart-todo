@@ -11,7 +11,7 @@ const getApiUrl = () => {
   
   if (!envUrl && mode === 'production') {
     console.error('Production API URL is not set!');
-    return 'https://smart-todo-backend.onrender.com'; // 生產環境的默認值
+    return 'https://smart-todo-2.onrender.com'; // 生產環境的默認值
   }
   
   return envUrl || 'http://localhost:8000'; // 開發環境的默認值

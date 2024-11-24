@@ -42,7 +42,7 @@ export default defineConfig(({ command, mode }) => {
       }
     },
     define: {
-      __API_URL__: JSON.stringify(env.VITE_API_URL || 'http://localhost:8000'),
+      __API_URL__: JSON.stringify(env.VITE_API_URL || (mode === 'production' ? 'https://smart-todo-2.onrender.com' : 'http://localhost:8000')),
       __MODE__: JSON.stringify(mode),
       'import.meta.env.VITE_API_URL': JSON.stringify(env.VITE_API_URL),
       'import.meta.env.MODE': JSON.stringify(mode)
