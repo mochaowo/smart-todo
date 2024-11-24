@@ -17,72 +17,27 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
-# CORS 設置
-default_origins = [
+# 基本 CORS 設置
+origins = [
     "http://localhost:3000",
-    "http://localhost:5173"
+    "http://localhost:5173",
+    "http://127.0.0.1:3000",
+    "http://127.0.0.1:5173"
 ]
 
 # 從環境變量獲取額外的 origins
-# 可以用逗號分隔多個域名，例如：
-# ALLOWED_ORIGINS=https://app1.vercel.app,https://app2.vercel.app
 additional_origins = os.getenv("ALLOWED_ORIGINS", "").split(",")
-origins = default_origins + [origin.strip() for origin in additional_origins if origin.strip()]
+origins.extend([origin.strip() for origin in additional_origins if origin.strip()])
 
-# 記錄允許的 origins
-logger.info(f"Default origins: {default_origins}")
-logger.info(f"Additional origins from env: {[o for o in additional_origins if o.strip()]}")
-logger.info(f"Final allowed origins: {origins}")
+logger.info(f"Configured origins: {origins}")
 
-# CORS 中間件設置
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,  # 使用具體的 origins 列表而不是 ["*"]
-    allow_credentials=True,  # 允許攜帶憑證
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
-    allow_headers=[
-        "Content-Type",
-        "Authorization",
-        "Accept",
-        "Origin",
-        "X-Requested-With"
-    ],
-    expose_headers=["*"],
-    max_age=3600,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
-
-@app.options("/{full_path:path}")
-async def options_route(request: Request):
-    origin = request.headers.get("origin", "")
-    logger.info(f"Received OPTIONS request from origin: {origin}")
-    
-    if origin in origins:
-        logger.info(f"Origin {origin} is allowed")
-        return JSONResponse(
-            content="OK",
-            headers={
-                "Access-Control-Allow-Origin": origin,
-                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS, PATCH",
-                "Access-Control-Allow-Headers": "Content-Type, Authorization, Accept, Origin, X-Requested-With",
-                "Access-Control-Allow-Credentials": "true",
-                "Access-Control-Max-Age": "3600",
-            },
-        )
-    logger.warning(f"Origin {origin} is not allowed. Allowed origins: {origins}")
-    return JSONResponse(status_code=400, content={"message": "Invalid origin"})
-
-@app.middleware("http")
-async def cors_middleware(request: Request, call_next):
-    origin = request.headers.get("origin", "")
-    logger.debug(f"Request from origin: {origin}")
-    
-    response = await call_next(request)
-    
-    if origin in origins:
-        response.headers["Access-Control-Allow-Origin"] = origin
-        response.headers["Access-Control-Allow-Credentials"] = "true"
-    
-    return response
 
 # 初始化數據庫
 init_db()
