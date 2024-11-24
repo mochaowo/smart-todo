@@ -1,9 +1,24 @@
 import axios, { AxiosError } from 'axios';
 import { Task, TaskCreate, TaskUpdate, TaskStatus } from '../types/Task';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+// 獲取環境變量
+const getApiUrl = () => {
+  const envUrl = import.meta.env.VITE_API_URL;
+  const mode = import.meta.env.MODE;
+  
+  console.log('Build Mode:', mode);
+  console.log('Environment API URL:', envUrl);
+  
+  if (!envUrl && mode === 'production') {
+    console.error('Production API URL is not set!');
+    return 'https://smart-todo-backend.onrender.com'; // 生產環境的默認值
+  }
+  
+  return envUrl || 'http://localhost:8000'; // 開發環境的默認值
+};
 
-console.log('API Base URL:', API_BASE_URL);
+const API_BASE_URL = getApiUrl();
+console.log('Final API URL:', API_BASE_URL);
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -11,17 +26,17 @@ const api = axios.create({
     'Content-Type': 'application/json',
     'Accept': 'application/json'
   },
-  withCredentials: true,  // 啟用 credentials
-  timeout: 10000,  // 10 秒超時
+  withCredentials: true,
+  timeout: 10000,
   validateStatus: (status) => {
-    return status >= 200 && status < 500;  // 只有 500 以上的錯誤才拒絕
+    return status >= 200 && status < 500;
   }
 });
 
 // 添加請求攔截器
 api.interceptors.request.use(
   (config) => {
-    console.log(`Making ${config.method?.toUpperCase()} request to: ${config.baseURL}${config.url}`);
+    console.log(`[${import.meta.env.MODE}] Making ${config.method?.toUpperCase()} request to: ${config.baseURL}${config.url}`);
     console.log('Request headers:', config.headers);
     return config;
   },
@@ -34,7 +49,7 @@ api.interceptors.request.use(
 // 添加響應攔截器
 api.interceptors.response.use(
   (response) => {
-    console.log(`Response from ${response.config.url}:`, {
+    console.log(`[${import.meta.env.MODE}] Response from ${response.config.url}:`, {
       status: response.status,
       headers: response.headers,
       data: response.data
