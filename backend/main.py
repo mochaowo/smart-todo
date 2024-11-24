@@ -10,7 +10,6 @@ from typing import List
 from datetime import datetime
 import pytz
 import os
-from starlette.middleware.base import BaseHTTPMiddleware
 
 # 配置日誌
 logging.basicConfig(level=logging.INFO)
@@ -18,28 +17,34 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
-# Custom CORS middleware
-class CORSMiddlewareWithDebug(BaseHTTPMiddleware):
-    async def dispatch(self, request: Request, call_next):
-        # Log the request
-        logger.info(f"Incoming request: {request.method} {request.url}")
-        logger.info(f"Request headers: {request.headers}")
+# CORS 設置
+origins = [
+    "http://localhost:3000",
+    "http://localhost:5173",
+    "https://smart-todo-mochaowo.vercel.app"
+]
 
-        # Add CORS headers
-        response = await call_next(request)
-        
-        # Log the response
-        logger.info(f"Response status: {response.status_code}")
-        logger.info(f"Response headers: {response.headers}")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+    allow_headers=["*"],
+    max_age=3600,
+    expose_headers=["*"]
+)
 
-        response.headers["Access-Control-Allow-Origin"] = "*"
-        response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
-        response.headers["Access-Control-Allow-Headers"] = "*"
-        
-        return response
-
-# Add custom CORS middleware
-app.add_middleware(CORSMiddlewareWithDebug)
+@app.options("/{full_path:path}")
+async def options_route(request: Request):
+    return JSONResponse(
+        content="OK",
+        headers={
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS, PATCH",
+            "Access-Control-Allow-Headers": "*",
+            "Access-Control-Max-Age": "3600",
+        },
+    )
 
 # 初始化數據庫
 init_db()

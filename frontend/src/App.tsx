@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Task, TaskStatus } from './types/Task';
+import React, { useEffect, useState, useMemo } from 'react';
+import { Task, TaskStatus, TaskCreate } from './types/Task';
 import TaskList from './components/TaskList';
 import TaskForm from './components/TaskForm';
 import LeftSidebar from './components/LeftSidebar';
@@ -29,9 +29,9 @@ function App() {
     }
   };
 
-  const handleCreateTask = async (task: Task) => {
+  const handleCreateTask = async (taskData: TaskCreate) => {
     try {
-      const newTask = await createTask(task);
+      const newTask = await createTask(taskData);
       setTasks([...tasks, newTask]);
       toast.success('任務創建成功');
     } catch (error) {
@@ -59,8 +59,8 @@ function App() {
           newStatus = TaskStatus.TODO;
       }
 
-      const updatedTask = await updateTask(id, { ...task, status: newStatus });
-      setTasks(tasks.map(t => t.id === id ? updatedTask : t));
+      const result = await updateTask(id, { ...task, status: newStatus });
+      setTasks(tasks.map(t => t.id === id ? result : t));
       toast.success(`任務狀態已更新為${newStatus === TaskStatus.TODO ? '未開始' : newStatus === TaskStatus.IN_PROGRESS ? '進行中' : '已完成'}`);
     } catch (error) {
       toast.error('更新任務失敗');
@@ -69,8 +69,8 @@ function App() {
 
   const handleUpdateTask = async (id: number, updates: Partial<Task>) => {
     try {
-      const updatedTask = await updateTask(id, updates);
-      setTasks(tasks.map(task => task.id === id ? { ...task, ...updates } : task));
+      const result = await updateTask(id, updates);
+      setTasks(tasks.map(task => task.id === id ? result : task));
       toast.success('任務更新成功');
     } catch (error) {
       toast.error('更新任務失敗');
@@ -104,7 +104,7 @@ function App() {
         setTasks(items);
       } else {
         const newStatus = destination.droppableId as TaskStatus;
-        const updatedTask = await updateTask(taskId, { 
+        const result = await updateTask(taskId, { 
           ...task, 
           status: newStatus 
         });
@@ -112,7 +112,7 @@ function App() {
         setTasks(prev => {
           const newTasks = prev.filter(t => t.id !== taskId);
           const insertIndex = destination.index;
-          newTasks.splice(insertIndex, 0, updatedTask);
+          newTasks.splice(insertIndex, 0, result);
           return newTasks;
         });
 
@@ -124,11 +124,11 @@ function App() {
     }
   };
 
-  const filteredTasks = tasks.filter(task => {
+  const filteredTasks = useMemo(() => tasks.filter(task => {
     if (filter === 'pending' && task.status === TaskStatus.DONE) return false;
     if (filter === 'completed' && task.status !== TaskStatus.DONE) return false;
     return true;
-  });
+  }), [tasks, filter]);
 
   const renderMainContent = () => {
     switch (currentView) {

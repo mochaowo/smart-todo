@@ -11,7 +11,11 @@ const api = axios.create({
     'Content-Type': 'application/json',
     'Accept': 'application/json'
   },
-  withCredentials: false
+  withCredentials: true,  // 啟用 credentials
+  timeout: 10000,  // 10 秒超時
+  validateStatus: (status) => {
+    return status >= 200 && status < 500;  // 只有 500 以上的錯誤才拒絕
+  }
 });
 
 // 添加請求攔截器
