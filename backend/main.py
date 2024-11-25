@@ -18,26 +18,42 @@ logger = logging.getLogger(__name__)
 app = FastAPI()
 
 # 基本 CORS 設置
-origins = [
+default_origins = [
     "http://localhost:3000",
     "http://localhost:5173",
     "http://127.0.0.1:3000",
-    "http://127.0.0.1:5173"
+    "http://127.0.0.1:5173",
+    "https://smart-todo-13aw-6ct87quow-mochaowos-projects.vercel.app",
+    "https://smart-todo-mochaowo.vercel.app"
 ]
 
 # 從環境變量獲取額外的 origins
 additional_origins = os.getenv("ALLOWED_ORIGINS", "").split(",")
-origins.extend([origin.strip() for origin in additional_origins if origin.strip()])
+origins = default_origins + [origin.strip() for origin in additional_origins if origin.strip()]
 
 logger.info(f"Configured origins: {origins}")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # 允許所有來源
-    allow_credentials=False,  # 不使用憑證
+    allow_origins=origins,  # 使用具體的 origins 列表
+    allow_credentials=True,  # 允許憑證
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["*"]
 )
+
+@app.middleware("http")
+async def cors_middleware(request: Request, call_next):
+    origin = request.headers.get("origin", "")
+    logger.info(f"Request from origin: {origin}")
+    
+    response = await call_next(request)
+    
+    if origin in origins:
+        response.headers["Access-Control-Allow-Origin"] = origin
+        response.headers["Access-Control-Allow-Credentials"] = "true"
+    
+    return response
 
 # 初始化數據庫
 init_db()

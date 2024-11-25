@@ -25,12 +25,15 @@ const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
-  }
+  },
+  withCredentials: true,
 });
 
 // 請求攔截器
 api.interceptors.request.use(
   (config) => {
+    const origin = window.location.origin;
+    console.log(`Making request from origin: ${origin}`);
     console.log(`[${import.meta.env.MODE}] Making ${config.method?.toUpperCase()} request to: ${config.baseURL}${config.url}`);
     return config;
   },
