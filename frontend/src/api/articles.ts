@@ -1,5 +1,5 @@
-import axios from 'axios';
-import { Article, ArticleCreate, ArticleUpdate } from '../types/Article';
+import { api } from './base';
+import type { Article, ArticleCreate, ArticleUpdate } from '../types/Article';
 
 // 獲取環境變量
 const getApiUrl = () => {
@@ -21,7 +21,7 @@ const API_BASE_URL = getApiUrl();
 console.log('Final API URL:', API_BASE_URL);
 
 // 創建 axios 實例
-const api = axios.create({
+const axiosInstance = api.create({
   baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
@@ -30,7 +30,7 @@ const api = axios.create({
 });
 
 // 請求攔截器
-api.interceptors.request.use(
+axiosInstance.interceptors.request.use(
   (config) => {
     const origin = window.location.origin;
     console.log(`Making request from origin: ${origin}`);
@@ -44,7 +44,7 @@ api.interceptors.request.use(
 );
 
 // 響應攔截器
-api.interceptors.response.use(
+axiosInstance.interceptors.response.use(
   (response) => {
     return response;
   },
@@ -60,8 +60,8 @@ export const getArticles = async (skip: number = 0, limit: number = 10): Promise
     console.log(`Fetching articles with skip=${skip} and limit=${limit}`);
     const response = await api.get<Article[]>('/articles', {
       params: {
-        skip: skip,
-        limit: limit
+        skip,
+        limit
       }
     });
     console.log('Articles response:', response.data);

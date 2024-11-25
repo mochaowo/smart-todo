@@ -86,8 +86,8 @@ class Article(Base):
             "content": self.content,
             "summary": self.summary,
             "category": self.category,
-            "created_at": self.created_at,
-            "updated_at": self.updated_at,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "updated_at": self.updated_at.isoformat() if self.updated_at else None,
             "views": self.views,
             "tags": self.tags
         }
