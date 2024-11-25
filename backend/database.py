@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, event
+from sqlalchemy import create_engine, event, inspect
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import logging
@@ -47,23 +47,22 @@ def get_db():
         db.close()
 
 def init_db():
-    """初始化數據庫，保留現有數據"""
-    import models  # 導入模型以確保它們被註冊
-    
+    """初始化數據庫，創建所有表"""
     try:
-        # 檢查數據庫文件是否存在
-        if os.path.exists(DB_PATH):
-            logger.info("使用現有數據庫")
-            # 如果存在，只確保表結構是最新的
-            Base.metadata.create_all(bind=engine, checkfirst=True)
-        else:
-            logger.info("創建新數據庫")
-            # 如果不存在，創建新的數據庫和表
-            Base.metadata.create_all(bind=engine)
+        # 導入模型以確保它們被註冊
+        import models
         
-        logger.info("數據庫初始化成功")
+        # 創建所有表
+        Base.metadata.create_all(bind=engine)
+        logger.info("Database tables created successfully")
+        
+        # 檢查表是否存在
+        inspector = inspect(engine)
+        tables = inspector.get_table_names()
+        logger.info(f"Existing tables: {tables}")
+        
     except Exception as e:
-        logger.error(f"數據庫初始化失敗: {str(e)}")
+        logger.error(f"Error initializing database: {str(e)}")
         raise
 
 # 初始化數據庫

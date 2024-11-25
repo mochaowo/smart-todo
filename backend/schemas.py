@@ -57,5 +57,48 @@ class Task(TaskBase):
             datetime: lambda v: v.isoformat() if v else None
         }
 
+# Article 相關的模型
+class ArticleBase(BaseModel):
+    title: str = Field(..., min_length=1, max_length=255)
+    content: str = Field(..., min_length=1, max_length=10000)
+    summary: Optional[str] = Field(None, max_length=500)
+    category: Optional[str] = Field(None, max_length=100)
+    tags: Optional[str] = Field(None, max_length=255)
+
+    class Config:
+        from_attributes = True
+        json_encoders = {
+            datetime: lambda v: v.isoformat() if v else None
+        }
+
+class ArticleCreate(ArticleBase):
+    pass
+
+class ArticleUpdate(BaseModel):
+    title: Optional[str] = Field(None, min_length=1, max_length=255)
+    content: Optional[str] = Field(None, min_length=1, max_length=10000)
+    summary: Optional[str] = Field(None, max_length=500)
+    category: Optional[str] = Field(None, max_length=100)
+    tags: Optional[str] = Field(None, max_length=255)
+
+    class Config:
+        from_attributes = True
+        json_encoders = {
+            datetime: lambda v: v.isoformat() if v else None
+        }
+
+class Article(ArticleBase):
+    id: int
+    created_at: datetime
+    updated_at: datetime
+    views: int = Field(default=0)
+
+    class Config:
+        from_attributes = True
+        json_encoders = {
+            datetime: lambda v: v.isoformat() if v else None
+        }
+
 # 記錄模型加載
 logger.info("Pydantic models loaded successfully")
+logger.info("Article Pydantic models loaded successfully")

@@ -64,3 +64,33 @@ class Task(Base):
 
 # 在模型加載時記錄
 logger.info("Task model loaded successfully")
+
+class Article(Base):
+    __tablename__ = "articles"
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String(255), nullable=False)
+    content = Column(String(10000), nullable=False)
+    summary = Column(String(500), nullable=True)
+    category = Column(String(100), nullable=True)
+    created_at = Column(TZDateTime, server_default=func.now())
+    updated_at = Column(TZDateTime, server_default=func.now(), onupdate=func.now())
+    views = Column(Integer, default=0)
+    tags = Column(String(255), nullable=True)
+
+    def to_dict(self):
+        """將模型轉換為字典"""
+        return {
+            "id": self.id,
+            "title": self.title,
+            "content": self.content,
+            "summary": self.summary,
+            "category": self.category,
+            "created_at": self.created_at,
+            "updated_at": self.updated_at,
+            "views": self.views,
+            "tags": self.tags
+        }
+
+# 在模型加載時記錄
+logger.info("Article model loaded successfully")

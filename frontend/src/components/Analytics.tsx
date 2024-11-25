@@ -161,77 +161,118 @@ const Analytics: React.FC<AnalyticsProps> = ({ tasks }) => {
 
   const chartOptions = {
     responsive: true,
+    maintainAspectRatio: false,
+    layout: {
+      padding: {
+        left: 10,
+        right: 10,
+        top: 10,
+        bottom: 10
+      }
+    },
     plugins: {
       legend: {
-        position: 'top' as const,
-      },
+        display: false
+      }
     },
     scales: {
       y: {
         beginAtZero: true,
+        border: {
+          display: false
+        },
+        grid: {
+          color: '#e5e7eb',
+          drawTicks: false,
+          drawBorder: false
+        },
         ticks: {
           stepSize: 1,
-        },
+          padding: 10
+        }
       },
-    },
+      x: {
+        border: {
+          display: false
+        },
+        grid: {
+          display: false,
+          drawBorder: false
+        },
+        ticks: {
+          padding: 5
+        }
+      }
+    }
   };
 
   const pieOptions = {
     responsive: true,
+    maintainAspectRatio: false,
+    layout: {
+      padding: {
+        left: 10,
+        right: 10,
+        top: 10,
+        bottom: 30
+      }
+    },
     plugins: {
       legend: {
-        position: 'top' as const,
-      },
-    },
+        position: 'bottom' as const,
+        labels: {
+          padding: 20
+        }
+      }
+    }
   };
 
   return (
-    <div className="space-y-8">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6">任務統計分析</h2>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div className="space-y-4">
+      {/* 統計數字總覽 */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+        <div className="bg-white p-4 rounded-lg shadow-md">
+          <h4 className="text-sm font-medium text-gray-500">總任務數</h4>
+          <p className="text-2xl font-bold text-gray-800">{tasks.length}</p>
+        </div>
+        <div className="bg-white p-4 rounded-lg shadow-md">
+          <h4 className="text-sm font-medium text-gray-500">已完成任務</h4>
+          <p className="text-2xl font-bold text-green-600">{statusDistribution[TaskStatus.DONE]}</p>
+        </div>
+        <div className="bg-white p-4 rounded-lg shadow-md">
+          <h4 className="text-sm font-medium text-gray-500">進行中任務</h4>
+          <p className="text-2xl font-bold text-blue-600">{statusDistribution[TaskStatus.IN_PROGRESS]}</p>
+        </div>
+        <div className="bg-white p-4 rounded-lg shadow-md">
+          <h4 className="text-sm font-medium text-gray-500">待處理任務</h4>
+          <p className="text-2xl font-bold text-yellow-600">{statusDistribution[TaskStatus.TODO]}</p>
+        </div>
+      </div>
+
+      {/* 圖表區域 */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {/* 任務狀態分布 */}
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h3 className="text-lg font-semibold text-gray-700 mb-4">任務狀態分布</h3>
-          <div className="h-64">
+        <div className="bg-white p-4 rounded-lg shadow-md">
+          <h3 className="text-lg font-semibold text-gray-700 mb-2">任務狀態分布</h3>
+          <div className="h-48">
             <Pie data={statusChartData} options={pieOptions} />
           </div>
         </div>
 
         {/* 任務優先級分布 */}
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h3 className="text-lg font-semibold text-gray-700 mb-4">任務優先級分布</h3>
-          <div className="h-64">
+        <div className="bg-white p-4 rounded-lg shadow-md">
+          <h3 className="text-lg font-semibold text-gray-700 mb-2">任務優先級分布</h3>
+          <div className="h-48">
             <Pie data={priorityChartData} options={pieOptions} />
           </div>
         </div>
 
         {/* 任務完成趨勢 */}
-        <div className="bg-white p-6 rounded-lg shadow-md md:col-span-2">
-          <h3 className="text-lg font-semibold text-gray-700 mb-4">近7天任務完成趨勢</h3>
-          <div className="h-64">
+        <div className="bg-white p-4 rounded-lg shadow-md md:col-span-2">
+          <h3 className="text-lg font-semibold text-gray-700 mb-2">近7天任務完成趨勢</h3>
+          <div className="h-48">
             <Bar data={trendChartData} options={chartOptions} />
           </div>
-        </div>
-      </div>
-
-      {/* 統計數字總覽 */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h4 className="text-sm font-medium text-gray-500">總任務數</h4>
-          <p className="text-2xl font-bold text-gray-800">{tasks.length}</p>
-        </div>
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h4 className="text-sm font-medium text-gray-500">已完成任務</h4>
-          <p className="text-2xl font-bold text-green-600">{statusDistribution[TaskStatus.DONE]}</p>
-        </div>
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h4 className="text-sm font-medium text-gray-500">進行中任務</h4>
-          <p className="text-2xl font-bold text-blue-600">{statusDistribution[TaskStatus.IN_PROGRESS]}</p>
-        </div>
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h4 className="text-sm font-medium text-gray-500">待處理任務</h4>
-          <p className="text-2xl font-bold text-yellow-600">{statusDistribution[TaskStatus.TODO]}</p>
         </div>
       </div>
     </div>
