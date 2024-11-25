@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 app = FastAPI()
 
 # 基本 CORS 設置
-default_origins = [
+origins = [
     "http://localhost:3000",
     "http://localhost:5173",
     "http://127.0.0.1:3000",
@@ -29,17 +29,16 @@ default_origins = [
 
 # 從環境變量獲取額外的 origins
 additional_origins = os.getenv("ALLOWED_ORIGINS", "").split(",")
-origins = default_origins + [origin.strip() for origin in additional_origins if origin.strip()]
+origins.extend([origin.strip() for origin in additional_origins if origin.strip()])
 
 logger.info(f"Configured origins: {origins}")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,  # 使用具體的 origins 列表
-    allow_credentials=True,  # 允許憑證
+    allow_origins=origins,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
-    expose_headers=["*"]
 )
 
 @app.middleware("http")
@@ -51,7 +50,7 @@ async def cors_middleware(request: Request, call_next):
     
     if origin in origins:
         response.headers["Access-Control-Allow-Origin"] = origin
-        response.headers["Access-Control-Allow-Credentials"] = "true"
+        response.headers["Access-Control-Allow-Credentials"] = "false"
     
     return response
 
