@@ -1,28 +1,11 @@
-import { api } from './base';
-import type { Article, ArticleCreate, ArticleUpdate } from '../types/Article';
+import axios from 'axios';
+import { Article, ArticleCreate, ArticleUpdate } from '../types/Article';
 
-// 獲取環境變量
-const getApiUrl = () => {
-  const envUrl = import.meta.env.VITE_API_URL;
-  const mode = import.meta.env.MODE;
-  
-  console.log('Build Mode:', mode);
-  console.log('Environment API URL:', envUrl);
-  
-  if (!envUrl && mode === 'production') {
-    console.error('Production API URL is not set!');
-    return 'https://smart-todo-2.onrender.com';
-  }
-  
-  return envUrl || 'http://localhost:8000';
-};
-
-const API_BASE_URL = getApiUrl();
-console.log('Final API URL:', API_BASE_URL);
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 // 創建 axios 實例
-const axiosInstance = api.create({
-  baseURL: API_BASE_URL,
+const axiosInstance = axios.create({
+  baseURL: API_URL,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -58,7 +41,7 @@ axiosInstance.interceptors.response.use(
 export const getArticles = async (skip: number = 0, limit: number = 10): Promise<Article[]> => {
   try {
     console.log(`Fetching articles with skip=${skip} and limit=${limit}`);
-    const response = await api.get<Article[]>('/articles', {
+    const response = await axiosInstance.get('/articles', {
       params: {
         skip,
         limit
@@ -76,7 +59,7 @@ export const getArticles = async (skip: number = 0, limit: number = 10): Promise
 export const getArticle = async (id: number): Promise<Article> => {
   try {
     console.log(`Fetching article with id=${id}`);
-    const response = await api.get<Article>(`/articles/${id}`);
+    const response = await axiosInstance.get(`/articles/${id}`);
     console.log('Article response:', response.data);
     return response.data;
   } catch (error) {
@@ -89,7 +72,7 @@ export const getArticle = async (id: number): Promise<Article> => {
 export const createArticle = async (article: ArticleCreate): Promise<Article> => {
   try {
     console.log('Creating article:', article);
-    const response = await api.post<Article>('/articles', article);
+    const response = await axiosInstance.post('/articles', article);
     console.log('Create response:', response.data);
     return response.data;
   } catch (error) {
@@ -102,7 +85,7 @@ export const createArticle = async (article: ArticleCreate): Promise<Article> =>
 export const updateArticle = async (id: number, article: ArticleUpdate): Promise<Article> => {
   try {
     console.log(`Updating article ${id}:`, article);
-    const response = await api.put<Article>(`/articles/${id}`, article);
+    const response = await axiosInstance.put(`/articles/${id}`, article);
     console.log('Update response:', response.data);
     return response.data;
   } catch (error) {
@@ -115,7 +98,7 @@ export const updateArticle = async (id: number, article: ArticleUpdate): Promise
 export const deleteArticle = async (id: number): Promise<void> => {
   try {
     console.log(`Deleting article ${id}`);
-    await api.delete(`/articles/${id}`);
+    await axiosInstance.delete(`/articles/${id}`);
     console.log('Delete successful');
   } catch (error) {
     console.error('Error deleting article:', error);

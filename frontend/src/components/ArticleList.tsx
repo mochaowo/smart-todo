@@ -3,6 +3,7 @@ import { Article } from '../types/Article';
 import { getArticles } from '../api/articles';
 import { format } from 'date-fns';
 import { Link } from 'react-router-dom';
+import { PlusIcon } from '@heroicons/react/24/outline';
 
 const ArticleList: React.FC = () => {
   const [articles, setArticles] = useState<Article[]>([]);
@@ -14,7 +15,7 @@ const ArticleList: React.FC = () => {
   const loadArticles = async () => {
     try {
       setLoading(true);
-      const data = await getArticles(page);
+      const data = await getArticles((page - 1) * 10, 10);
       if (data.length < 10) {
         setHasMore(false);
       }
@@ -42,6 +43,17 @@ const ArticleList: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">文章列表</h1>
+        <Link
+          to="/articles/new"
+          className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+        >
+          <PlusIcon className="h-5 w-5 mr-2" />
+          新增文章
+        </Link>
+      </div>
+
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {articles.map(article => (
           <Link
@@ -60,7 +72,7 @@ const ArticleList: React.FC = () => {
               )}
               <div className="flex justify-between items-center text-sm text-gray-500 dark:text-gray-400">
                 <span>
-                  {format(new Date(article.created_at), 'yyyy/MM/dd HH:mm')}
+                  {article.created_at && format(new Date(article.created_at), 'yyyy/MM/dd HH:mm')}
                 </span>
                 <span>{article.views} 次查看</span>
               </div>
